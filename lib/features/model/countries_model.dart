@@ -21,7 +21,10 @@ CountriesModel test1 = CountriesModel(
   question: "Түштүк Кореянын борбору",
   capitalImage: "assets/countries/seaul.jpg",
   answers: [
-    Answer(answer: "Гуанджоу", isTrue: false),
+    Answer(
+      answer: "Гуанджоу",
+      isTrue: false,
+    ),
     Answer(answer: "Сеул", isTrue: true),
     Answer(answer: "Вашингтон", isTrue: false),
     Answer(answer: "Токио", isTrue: false),
@@ -49,8 +52,3 @@ CountriesModel test3 = CountriesModel(
 );
 
 List<CountriesModel> tests = [test1, test2, test3];
-List<Map<String, dynamic>> continents = [
-  {'name': 'Asia', 'tests': tests},
-  {'name': 'Africa', 'tests': tests},
-  {'name': 'Australia', 'tests': tests},
-];

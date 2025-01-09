@@ -11,6 +11,8 @@ class CountriesPage extends StatefulWidget {
 
 class _CountriesPageState extends State<CountriesPage> {
   Color buttonColor = Colors.blue;
+  final int nextindex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,8 +50,8 @@ class _CountriesPageState extends State<CountriesPage> {
             backgroundColor: Colors.grey,
             valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
           ),
-          Text(tests[2].question),
-          AssetsImage(image: tests[2].capitalImage, size: 300),
+          Text(tests[nextindex].question),
+          AssetsImage(image: tests[nextindex].capitalImage, size: 300),
           Expanded(
             child: GridView.count(
                 primary: false,
@@ -67,7 +69,7 @@ class _CountriesPageState extends State<CountriesPage> {
                     },
                     onTapDown: (_) {
                       setState(() {
-                        buttonColor = tests[2].answers[san].isTrue
+                        buttonColor = tests[nextindex].answers[san].isTrue
                             ? Colors.green
                             : Colors.red;
                       });
@@ -78,7 +80,7 @@ class _CountriesPageState extends State<CountriesPage> {
                             .grey; // Басуу токтотулганда баштапкы түскө кайтуу
                       });
                     },
-                    tests[2].answers[san].answer,
+                    tests[nextindex].answers[san].answer,
                     buttonColor: buttonColor,
                   );
                 })),
