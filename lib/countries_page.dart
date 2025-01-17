@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:sabak_18_capitals_test/continents_page.dart';
 import 'package:sabak_18_capitals_test/features/model/countries_model.dart';
+import 'package:sabak_18_capitals_test/features/widgets.dart';
 
 class CountriesPage extends StatefulWidget {
   const CountriesPage({super.key});
@@ -10,37 +13,60 @@ class CountriesPage extends StatefulWidget {
 }
 
 class _CountriesPageState extends State<CountriesPage> {
-  Color buttonColor = Colors.blue;
-  final int nextindex = 0;
+  final GlobalKey<ScaffoldState> _globalKey = GlobalKey();
+  int nextIndex = 0;
+  int correctAnswer = 0;
+  int incorrectAnswer = 0;
+  int lives = 3;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _globalKey,
+      endDrawer: const EndDrawerWidget(),
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Row(
+        title: Row(
           spacing: 5,
           children: [
-            AssetsImage(image: 'assets/images/previous.png', size: 40),
-            AssetsImage(
+            GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: const AssetsImage(
+                    image: 'assets/images/previous.png', size: 40)),
+            const AssetsImage(
               image: 'assets/images/lightbulb.png',
               size: 40,
             ),
-            Text('43'),
-            SizedBox(width: 20),
-            Text('14'),
+            Row(
+              children: [
+                Text(
+                  correctAnswer.toString(),
+                  style: const TextStyle(color: Colors.green),
+                ),
+              ],
+            ),
+            const SizedBox(width: 20),
+            Text(
+              incorrectAnswer.toString(),
+              style: const TextStyle(color: Colors.red),
+            ),
           ],
         ),
         actions: [
           Row(
             children: List.generate(
-                3,
+                lives,
                 (index) => const AssetsImage(
                       image: 'assets/images/heart.png',
                       size: 40,
                     )),
           ),
-          const AssetsImage(image: 'assets/images/mentor.gif', size: 40),
+          GestureDetector(
+              onTap: () {
+                _globalKey.currentState!.openEndDrawer();
+              },
+              child: const AssetsImage(
+                  image: 'assets/images/mentor.gif', size: 40)),
         ],
       ),
       body: Column(
@@ -50,8 +76,8 @@ class _CountriesPageState extends State<CountriesPage> {
             backgroundColor: Colors.grey,
             valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
           ),
-          Text(tests[nextindex].question),
-          AssetsImage(image: tests[nextindex].capitalImage, size: 300),
+          Text(tests[nextIndex].question),
+          AssetsImage(image: tests[nextIndex].capitalImage, size: 300),
           Expanded(
             child: GridView.count(
                 primary: false,
@@ -63,30 +89,67 @@ class _CountriesPageState extends State<CountriesPage> {
                   return CardWidget(
                     onTap: () {
                       setState(() {
-                        buttonColor =
-                            Colors.grey; // Кайра баштапкы түскө кайтуу
+                        if (tests[nextIndex].answers[san].isTrue == true) {
+                          correctAnswer++;
+                        } else {
+                          incorrectAnswer++;
+                          if (lives > 0) {
+                            lives--;
+                          }
+                        }
                       });
-                    },
-                    onTapDown: (_) {
+
+                      if (nextIndex + 1 == tests.length || lives == 0) {
+                        _showMyDialog(correctAnswer, incorrectAnswer);
+
+                        nextIndex = -1;
+                        correctAnswer = 0;
+                        incorrectAnswer = 0;
+                        lives = 3;
+                      }
                       setState(() {
-                        buttonColor = tests[nextindex].answers[san].isTrue
-                            ? Colors.green
-                            : Colors.red;
+                        nextIndex++;
                       });
                     },
-                    onTapCancel: () {
-                      setState(() {
-                        buttonColor = Colors
-                            .grey; // Басуу токтотулганда баштапкы түскө кайтуу
-                      });
-                    },
-                    tests[nextindex].answers[san].answer,
-                    buttonColor: buttonColor,
+                    tests[nextIndex].answers[san].answer,
+                    buttonColor: Colors.grey,
                   );
                 })),
           )
         ],
       ),
+    );
+  }
+
+  Future<void> _showMyDialog(int correctAnswer, int inCorrextAnswer) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Сиздин тест жыйынтыгыңыз'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Column(
+                  children: [
+                    Text("Туура жооптор: $correctAnswer"),
+                    Text("Туура эмес жооптор: $inCorrextAnswer"),
+                  ],
+                )
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Кайра баштоо'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

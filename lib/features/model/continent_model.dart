@@ -14,9 +14,9 @@ ContinentModel object1 =
 ContinentModel object2 =
     ContinentModel(text: "Asia", image: 'assets/continents/asia.png');
 ContinentModel object3 = ContinentModel(
-    text: "North America", image: 'assets/continents/north america.png');
+    text: "North America", image: 'assets/continents/america.png');
 ContinentModel object4 = ContinentModel(
-    text: "South America", image: 'assets/continents/South America.png');
+    text: "South America", image: 'assets/continents/south america.png');
 ContinentModel object5 =
     ContinentModel(text: "Africa", image: 'assets/continents/africa.png');
 ContinentModel object6 =
